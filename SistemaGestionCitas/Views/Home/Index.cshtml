@@ -2,7 +2,47 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mt-5">
+    <h1 class="display-4 fw-bold">Sistema de Gestión de Citas</h1>
+    <p class="lead">Administra clientes, servicios y citas de forma sencilla.</p>
+</div>
+
+<div class="row mt-5">
+
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-body text-center">
+                <h5 class="card-title">
+                 <i class="fa-solid fa-users"></i> Clientes
+				</h5>
+                <p class="card-text">Administrar clientes registrados.</p>
+                <a asp-controller="Clientes" asp-action="Index" class="btn btn-primary">Ver Clientes</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-body text-center">
+                <h5 class="card-title">
+					<i class="fa-solid fa-briefcase"></i> Servicios
+                </h5>
+                <p class="card-text">Gestionar servicios disponibles.</p>
+                <a asp-controller="Servicios" asp-action="Index" class="btn btn-success">Ver Servicios</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-body text-center">
+                <h5 class="card-title">
+					<i class="fa-solid fa-calendar-check"></i> Citas
+                </h5>
+                <p class="card-text">Programar y administrar citas.</p>
+                <a class="btn btn-warning disabled">Ver Citas</a>
+            </div>
+        </div>
+    </div>
+
 </div>

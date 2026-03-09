@@ -18,5 +18,22 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    background-color: #f5f6fa;
+}
+
+.card {
+    border-radius: 12px;
+}
+
+.navbar-brand {
+    font-size: 22px;
+}
+
+table {
+        background-color: white;
+}
+
+.card:hover {
+    transform: scale(1.03);
+    transition: 0.3s;
 }
