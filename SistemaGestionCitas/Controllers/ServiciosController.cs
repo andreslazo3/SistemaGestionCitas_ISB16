@@ -9,8 +9,10 @@ using Microsoft.EntityFrameworkCore;
 using SistemaGestionCitas.Data;
 using SistemaGestionCitas.Models;
 
+
 namespace SistemaGestionCitas.Controllers
 {
+    [Authorize]
     [Authorize(Roles = "Administrador")]
     public class ServiciosController : Controller
     {

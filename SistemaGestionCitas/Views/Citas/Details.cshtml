@@ -1,0 +1,51 @@
+﻿@model SistemaGestionCitas.Models.Cita
+
+@{
+    ViewData["Title"] = "Detalle de Cita";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h4><i class="bi bi-calendar-event"></i> Detalle de Cita</h4>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Cliente</dt>
+                        <dd class="col-sm-8">@Model.Cliente?.NombreCompleto</dd>
+
+                        <dt class="col-sm-4">Servicio</dt>
+                        <dd class="col-sm-8">@Model.Servicio?.NombreServicio</dd>
+
+                        <dt class="col-sm-4">Fecha</dt>
+                        <dd class="col-sm-8">@Model.Fecha.ToString("dd/MM/yyyy")</dd>
+
+                        <dt class="col-sm-4">Hora</dt>
+                        <dd class="col-sm-8">@DateTime.Today.Add(Model.Hora).ToString("hh:mm tt")</dd>
+
+                        <dt class="col-sm-4">Estado</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.Estado == SistemaGestionCitas.Models.EstadoCita.Programada)
+                            {
+                                <span class="badge bg-success">Programada</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Cancelada</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-4">Usuario</dt>
+                        <dd class="col-sm-8">@Model.Usuario?.Email</dd>
+                    </dl>
+
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Volver
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

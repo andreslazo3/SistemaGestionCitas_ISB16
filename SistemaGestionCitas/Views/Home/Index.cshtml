@@ -7,10 +7,50 @@
     <p class="lead">Administra clientes, servicios y citas de forma sencilla.</p>
 </div>
 
+@if (User.Identity.IsAuthenticated)
+{
+    <a asp-action="Create" class="btn btn-primary">Crear</a>
+}
+
+
+<div class="row text-center mb-4">
+
+    <div class="col-md-4">
+        <div class="card dashboard-card shadow">
+            <div class="card-body">
+                <i class="fa-solid fa-users fa-2x text-primary"></i>
+                <h4 class="mt-2">Clientes</h4>
+                <h2>5</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card dashboard-card shadow">
+            <div class="card-body">
+                <i class="fa-solid fa-briefcase fa-2x text-success"></i>
+                <h4 class="mt-2">Servicios</h4>
+                <h2>4</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card dashboard-card shadow">
+            <div class="card-body">
+                <i class="fa-solid fa-calendar-check fa-2x text-warning"></i>
+                <h4 class="mt-2">Citas</h4>
+                <h2>3</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
 <div class="row mt-5">
 
     <div class="col-md-4">
-        <div class="card shadow">
+        <div class="card shadow-lg dashboard-card">
             <div class="card-body text-center">
                 <h5 class="card-title">
                  <i class="fa-solid fa-users"></i> Clientes
@@ -22,7 +62,7 @@
     </div>
 
     <div class="col-md-4">
-        <div class="card shadow">
+        <div class="card shadow-lg dqashboard-card">
             <div class="card-body text-center">
                 <h5 class="card-title">
 					<i class="fa-solid fa-briefcase"></i> Servicios
@@ -34,7 +74,7 @@
     </div>
 
     <div class="col-md-4">
-        <div class="card shadow">
+        <div class="card shadow-lg dashboard-card">
             <div class="card-body text-center">
                 <h5 class="card-title">
 					<i class="fa-solid fa-calendar-check"></i> Citas

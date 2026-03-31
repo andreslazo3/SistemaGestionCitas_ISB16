@@ -1,59 +1,394 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SistemaGestionCitas</title>
+    <title>@ViewData["Title"] - Sistema de Citas</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/SistemaGestionCitas.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f4f8;
+            margin: 0;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 260px;
+            height: 100vh;
+            background: linear-gradient(180deg, #0a1f44 0%, #0d3b7a 100%);
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            transition: width 0.3s;
+            overflow: hidden;
+        }
+
+        .sidebar-brand {
+            padding: 24px 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+            .sidebar-brand img {
+                width: 48px;
+                height: 48px;
+                object-fit: contain;
+                filter: brightness(0) invert(1);
+            }
+
+            .sidebar-brand .brand-text {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .sidebar-brand .brand-title {
+                color: white;
+                font-size: 0.88rem;
+                font-weight: 700;
+                line-height: 1.2;
+            }
+
+            .sidebar-brand .brand-sub {
+                color: rgba(255,255,255,0.5);
+                font-size: 0.72rem;
+            }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 0;
+            overflow-y: auto;
+        }
+
+        .nav-section-title {
+            color: rgba(255,255,255,0.35);
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 12px 20px 6px;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 20px;
+            color: rgba(255,255,255,0.75);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+            margin: 2px 0;
+        }
+
+            .sidebar-link:hover {
+                background: rgba(255,255,255,0.08);
+                color: white;
+                border-left-color: #f97316;
+            }
+
+            .sidebar-link.active {
+                background: rgba(249,115,22,0.15);
+                color: white;
+                border-left-color: #f97316;
+            }
+
+            .sidebar-link i {
+                font-size: 1.1rem;
+                width: 22px;
+                text-align: center;
+                flex-shrink: 0;
+            }
+
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .user-details .user-email {
+            color: white;
+            font-size: 0.78rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 160px;
+        }
+
+        .user-details .user-role {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.7rem;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 9px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            color: rgba(255,255,255,0.75);
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+            .btn-logout:hover {
+                background: rgba(239,68,68,0.2);
+                border-color: rgba(239,68,68,0.4);
+                color: #fca5a5;
+            }
+
+        /* ── TOPBAR ── */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 260px;
+            right: 0;
+            height: 64px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            z-index: 999;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .topbar-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+            .topbar-title span {
+                color: #f97316;
+            }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .topbar-badge {
+            background: #f0f4f8;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 0.78rem;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ── MAIN CONTENT ── */
+        .main-content {
+            margin-left: 260px;
+            margin-top: 64px;
+            padding: 28px;
+            min-height: calc(100vh - 64px);
+        }
+
+        /* ── ALERTAS GLOBALES ── */
+        .alert-global {
+            border-radius: 12px;
+            border: none;
+            font-size: 0.88rem;
+            padding: 12px 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .alert-success-custom {
+            background: #f0fdf4;
+            color: #166534;
+            border-left: 4px solid #22c55e;
+        }
+
+        .alert-danger-custom {
+            background: #fff0f0;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        /* ── RESPONSIVE ── */
+        @@media (max-width: 768px) {
+            .sidebar {
+                width: 0;
+            }
+
+            .topbar {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
-            <div class="container">
-                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
-                    Sistema de Citas
-                </a>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Clientes" asp-action="Index">Clientes</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Servicios" asp-action="Index">Servicios</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Citas" asp-action="Index">Citas</a>
-                        </li>
-
-                        <partial name="_LoginPartial" />
-
-                    </ul>
+    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <img src="~/images/uisil.png" alt="UISIL" />
+                <div class="brand-text">
+                    <span class="brand-title">Sistema de Citas</span>
+                    <span class="brand-sub">UISIL &mdash; ISB-16</span>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - SistemaGestionCitas - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">Principal</div>
+
+                <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")"
+                   asp-controller="Dashboard" asp-action="Index">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+
+                <div class="nav-section-title">Gestión</div>
+
+                <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Clientes" ? "active" : "")"
+                   asp-controller="Clientes" asp-action="Index">
+                    <i class="bi bi-people"></i> Clientes
+                </a>
+
+                <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Citas" ? "active" : "")"
+                   asp-controller="Citas" asp-action="Index">
+                    <i class="bi bi-calendar-check"></i> Citas
+                </a>
+
+                @if (User.IsInRole("Administrador"))
+                {
+                    <div class="nav-section-title">Administración</div>
+
+                    <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Servicios" ? "active" : "")"
+                       asp-controller="Servicios" asp-action="Index">
+                        <i class="bi bi-gear"></i> Servicios
+                    </a>
+
+                    <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Usuarios" ? "active" : "")"
+                       asp-controller="Usuarios" asp-action="Index">
+                        <i class="bi bi-person-gear"></i> Usuarios
+                    </a>
+                }
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        @User.Identity.Name?.Substring(0, 1).ToUpper()
+                    </div>
+                    <div class="user-details">
+                        <div class="user-email">@User.Identity.Name</div>
+                        <div class="user-role">
+                            @(User.IsInRole("Administrador") ? "Administrador" : "Usuario")
+                        </div>
+                    </div>
+                </div>
+                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
+                    <button type="submit" class="btn-logout">
+                        <i class="bi bi-box-arrow-left"></i> Cerrar sesión
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-title">
+                @ViewData["Title"]
+            </div>
+            <div class="topbar-right">
+                <div class="topbar-badge">
+                    <i class="bi bi-calendar3"></i>
+                    @DateTime.Now.ToString("dd/MM/yyyy")
+                </div>
+                @if (User.IsInRole("Administrador"))
+                {
+                    <div class="topbar-badge">
+                        <i class="bi bi-shield-check" style="color:#f97316"></i>
+                        Administrador
+                    </div>
+                }
+                else
+                {
+                    <div class="topbar-badge">
+                        <i class="bi bi-person-check" style="color:#0d6efd"></i>
+                        Usuario
+                    </div>
+                }
+            </div>
         </div>
-    </footer>
+
+        <!-- CONTENIDO -->
+        <div class="main-content">
+            @if (TempData["Exito"] != null)
+            {
+                <div class="alert-global alert-success-custom">
+                    <i class="bi bi-check-circle-fill"></i> @TempData["Exito"]
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert-global alert-danger-custom">
+                    <i class="bi bi-exclamation-triangle-fill"></i> @TempData["Error"]
+                </div>
+            }
+            @RenderBody()
+        </div>
+    }
+    else
+    {
+        <!-- Sin sidebar para páginas no autenticadas -->
+        @RenderBody()
+    }
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
