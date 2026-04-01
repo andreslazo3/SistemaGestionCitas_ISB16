@@ -1,34 +1,42 @@
-using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using SistemaGestionCitas.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SistemaGestionCitas.Data;
+using SistemaGestionCitas.Models;
+
 
 namespace SistemaGestionCitas.Controllers
 {
     [Authorize]
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
-            _logger = logger;
+            _context = context;
+            _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public IActionResult Index() => View();
+
+        public async Task<IActionResult> Stats()
         {
-            return View();
+            var userId = _userManager.GetUserId(User);
+            var esAdmin = User.IsInRole("Administrador");
+
+            var clientes = await _context.Clientes.CountAsync();
+            var servicios = await _context.Servicios.CountAsync(s => s.Activo);
+            var citas = esAdmin
+                ? await _context.Citas.CountAsync(c => c.Estado == EstadoCita.Programada)
+                : await _context.Citas.CountAsync(c => c.UsuarioId == userId && c.Estado == EstadoCita.Programada);
+            var usuarios = _userManager.Users.Count();
+
+            return Json(new { clientes, servicios, citas, usuarios });
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        public IActionResult Privacy() => View();
     }
 }

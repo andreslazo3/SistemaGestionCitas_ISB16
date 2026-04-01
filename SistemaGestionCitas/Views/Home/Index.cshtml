@@ -1,88 +1,379 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center mt-5">
-    <h1 class="display-4 fw-bold">Sistema de Gestión de Citas</h1>
-    <p class="lead">Administra clientes, servicios y citas de forma sencilla.</p>
+<style>
+    .home-hero {
+        background: linear-gradient(135deg, #0a1f44 0%, #0d3b7a 100%);
+        border-radius: 20px;
+        padding: 50px 40px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 30px;
+        margin-bottom: 28px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .home-hero::before {
+        content: '';
+        position: absolute;
+        width: 300px; height: 300px;
+        background: rgba(249,115,22,0.1);
+        border-radius: 50%;
+        top: -80px; right: -80px;
+    }
+
+    .home-hero::after {
+        content: '';
+        position: absolute;
+        width: 200px; height: 200px;
+        background: rgba(255,255,255,0.04);
+        border-radius: 50%;
+        bottom: -60px; left: 200px;
+    }
+
+    .hero-text h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+        line-height: 1.2;
+    }
+
+    .hero-text h1 span { color: #f97316; }
+
+    .hero-text p {
+        color: rgba(255,255,255,0.7);
+        font-size: 0.95rem;
+        margin-bottom: 24px;
+        max-width: 480px;
+    }
+
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    .btn-hero-primary {
+        background: #f97316;
+        color: white;
+        border: none;
+        padding: 11px 24px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.88rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+    .btn-hero-primary:hover {
+        background: #ea580c;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(249,115,22,0.4);
+    }
+
+    .btn-hero-secondary {
+        background: rgba(255,255,255,0.1);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.2);
+        padding: 11px 24px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.88rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+    .btn-hero-secondary:hover {
+        background: rgba(255,255,255,0.18);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .hero-icon {
+        font-size: 130px;
+        opacity: 0.15;
+        position: absolute;
+        right: 40px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: white;
+    }
+
+    /* Stat cards */
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        transition: all 0.2s;
+        text-decoration: none;
+        color: inherit;
+        border: 1px solid #f0f0f0;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        color: inherit;
+    }
+
+    .stat-icon {
+        width: 56px; height: 56px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .stat-info .stat-number {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #1a1a2e;
+        line-height: 1;
+        margin-bottom: 4px;
+    }
+
+    .stat-info .stat-label {
+        font-size: 0.82rem;
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    /* Quick access cards */
+    .quick-card {
+        background: white;
+        border-radius: 16px;
+        padding: 28px 24px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+        transition: all 0.25s;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        height: 100%;
+    }
+
+    .quick-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+        color: inherit;
+        border-color: #e0e0e0;
+    }
+
+    .quick-card-icon {
+        width: 52px; height: 52px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        margin-bottom: 16px;
+    }
+
+    .quick-card h5 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 6px;
+    }
+
+    .quick-card p {
+        font-size: 0.82rem;
+        color: #6c757d;
+        margin-bottom: 16px;
+        line-height: 1.5;
+    }
+
+    .quick-card .card-arrow {
+        font-size: 0.82rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .section-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .section-title::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: #e5e7eb;
+    }
+</style>
+
+<!-- HERO -->
+<div class="home-hero">
+    <div class="hero-text" style="position:relative; z-index:1;">
+        <h1>Sistema de <span>Gestión</span><br>de Citas</h1>
+        <p>Administrá clientes, servicios y citas de forma eficiente. Todo desde un solo lugar, con acceso basado en roles.</p>
+        <div class="hero-actions">
+            <a asp-controller="Citas" asp-action="Create" class="btn-hero-primary">
+                <i class="bi bi-calendar-plus"></i> Nueva Cita
+            </a>
+            <a asp-controller="Dashboard" asp-action="Index" class="btn-hero-secondary">
+                <i class="bi bi-speedometer2"></i> Ver Dashboard
+            </a>
+        </div>
+    </div>
+    <i class="bi bi-calendar2-heart hero-icon"></i>
 </div>
 
-@if (User.Identity.IsAuthenticated)
-{
-    <a asp-action="Create" class="btn btn-primary">Crear</a>
+<!-- STATS -->
+<div class="section-title">
+    <i class="bi bi-bar-chart-line" style="color:#f97316"></i> Resumen del sistema
+</div>
+<div class="row g-3 mb-4">
+    <div class="col-md-3 col-6">
+        <a asp-controller="Clientes" asp-action="Index" class="stat-card">
+            <div class="stat-icon" style="background:#eff6ff;">
+                <i class="bi bi-people" style="color:#0d6efd;"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-number" id="statClientes">—</div>
+                <div class="stat-label">Clientes</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3 col-6">
+        <a asp-controller="Servicios" asp-action="Index" class="stat-card">
+            <div class="stat-icon" style="background:#fff7ed;">
+                <i class="bi bi-gear" style="color:#f97316;"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-number" id="statServicios">—</div>
+                <div class="stat-label">Servicios activos</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3 col-6">
+        <a asp-controller="Citas" asp-action="Index" class="stat-card">
+            <div class="stat-icon" style="background:#f0fdf4;">
+                <i class="bi bi-calendar-check" style="color:#22c55e;"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-number" id="statCitas">—</div>
+                <div class="stat-label">Citas programadas</div>
+            </div>
+        </a>
+    </div>
+    @if (User.IsInRole("Administrador"))
+    {
+        <div class="col-md-3 col-6">
+            <a asp-controller="Usuarios" asp-action="Index" class="stat-card">
+                <div class="stat-icon" style="background:#fdf4ff;">
+                    <i class="bi bi-person-gear" style="color:#a855f7;"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-number" id="statUsuarios">—</div>
+                    <div class="stat-label">Usuarios</div>
+                </div>
+            </a>
+        </div>
+    }
+</div>
+
+<!-- ACCESO RÁPIDO -->
+<div class="section-title">
+    <i class="bi bi-lightning-charge" style="color:#f97316"></i> Acceso rápido
+</div>
+<div class="row g-3">
+    <div class="col-md-3 col-6">
+        <a asp-controller="Clientes" asp-action="Create" class="quick-card">
+            <div class="quick-card-icon" style="background:#eff6ff;">
+                <i class="bi bi-person-plus" style="color:#0d6efd;"></i>
+            </div>
+            <h5>Nuevo Cliente</h5>
+            <p>Registrá un nuevo cliente en el sistema rápidamente.</p>
+            <div class="card-arrow" style="color:#0d6efd;">
+                Ir ahora <i class="bi bi-arrow-right"></i>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3 col-6">
+        <a asp-controller="Citas" asp-action="Create" class="quick-card">
+            <div class="quick-card-icon" style="background:#f0fdf4;">
+                <i class="bi bi-calendar-plus" style="color:#22c55e;"></i>
+            </div>
+            <h5>Nueva Cita</h5>
+            <p>Programá una cita para un cliente existente.</p>
+            <div class="card-arrow" style="color:#22c55e;">
+                Ir ahora <i class="bi bi-arrow-right"></i>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3 col-6">
+        <a asp-controller="Citas" asp-action="Index" class="quick-card">
+            <div class="quick-card-icon" style="background:#fff7ed;">
+                <i class="bi bi-calendar-week" style="color:#f97316;"></i>
+            </div>
+            <h5>Ver Citas</h5>
+            <p>Consultá todas las citas registradas en el sistema.</p>
+            <div class="card-arrow" style="color:#f97316;">
+                Ir ahora <i class="bi bi-arrow-right"></i>
+            </div>
+        </a>
+    </div>
+    @if (User.IsInRole("Administrador"))
+    {
+        <div class="col-md-3 col-6">
+            <a asp-controller="Servicios" asp-action="Create" class="quick-card">
+                <div class="quick-card-icon" style="background:#fdf4ff;">
+                    <i class="bi bi-plus-circle" style="color:#a855f7;"></i>
+                </div>
+                <h5>Nuevo Servicio</h5>
+                <p>Agregá un nuevo servicio disponible para citas.</p>
+                <div class="card-arrow" style="color:#a855f7;">
+                    Ir ahora <i class="bi bi-arrow-right"></i>
+                </div>
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        fetch('/Home/Stats')
+            .then(r => r.json())
+            .then(data => {
+                animateNumber('statClientes', data.clientes);
+                animateNumber('statServicios', data.servicios);
+                animateNumber('statCitas', data.citas);
+                if (document.getElementById('statUsuarios'))
+                    animateNumber('statUsuarios', data.usuarios);
+            });
+
+        function animateNumber(id, target) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            let current = 0;
+            const step = Math.ceil(target / 20);
+            const timer = setInterval(() => {
+                current = Math.min(current + step, target);
+                el.textContent = current;
+                if (current >= target) clearInterval(timer);
+            }, 40);
+        }
+    </script>
 }
 
-
-<div class="row text-center mb-4">
-
-    <div class="col-md-4">
-        <div class="card dashboard-card shadow">
-            <div class="card-body">
-                <i class="fa-solid fa-users fa-2x text-primary"></i>
-                <h4 class="mt-2">Clientes</h4>
-                <h2>5</h2>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card dashboard-card shadow">
-            <div class="card-body">
-                <i class="fa-solid fa-briefcase fa-2x text-success"></i>
-                <h4 class="mt-2">Servicios</h4>
-                <h2>4</h2>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card dashboard-card shadow">
-            <div class="card-body">
-                <i class="fa-solid fa-calendar-check fa-2x text-warning"></i>
-                <h4 class="mt-2">Citas</h4>
-                <h2>3</h2>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<div class="row mt-5">
-
-    <div class="col-md-4">
-        <div class="card shadow-lg dashboard-card">
-            <div class="card-body text-center">
-                <h5 class="card-title">
-                 <i class="fa-solid fa-users"></i> Clientes
-				</h5>
-                <p class="card-text">Administrar clientes registrados.</p>
-                <a asp-controller="Clientes" asp-action="Index" class="btn btn-primary">Ver Clientes</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card shadow-lg dqashboard-card">
-            <div class="card-body text-center">
-                <h5 class="card-title">
-					<i class="fa-solid fa-briefcase"></i> Servicios
-                </h5>
-                <p class="card-text">Gestionar servicios disponibles.</p>
-                <a asp-controller="Servicios" asp-action="Index" class="btn btn-success">Ver Servicios</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card shadow-lg dashboard-card">
-            <div class="card-body text-center">
-                <h5 class="card-title">
-					<i class="fa-solid fa-calendar-check"></i> Citas
-                </h5>
-                <p class="card-text">Programar y administrar citas.</p>
-                <a class="btn btn-warning disabled">Ver Citas</a>
-            </div>
-        </div>
-    </div>
-
-</div>
