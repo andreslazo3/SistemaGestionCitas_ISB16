@@ -1,107 +1,352 @@
 ﻿@model SistemaGestionCitas.Controllers.DashboardUsuarioViewModel
-
 @{
-    ViewData["Title"] = "Mi Dashboard";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4"><i class="bi bi-speedometer"></i> Mi Dashboard</h2>
+<style>
+    .dash-welcome {
+        background: linear-gradient(135deg,#064e3b 0%,#065f46 100%);
+        border-radius: 16px;
+        padding: 28px 32px;
+        color: white;
+        margin-bottom: 24px;
+        position: relative;
+        overflow: hidden;
+    }
 
-    <!-- Tarjetas resumen -->
-    <div class="row g-3 mb-4">
-        <div class="col-md-4">
-            <div class="card text-white bg-dark shadow-sm">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="card-title">Total Mis Citas</h6>
-                        <h2 class="fw-bold">@Model.TotalCitas</h2>
-                    </div>
-                    <i class="bi bi-calendar-check fs-1 opacity-50"></i>
-                </div>
-            </div>
+        .dash-welcome::after {
+            content: '';
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            background: rgba(249,115,22,0.1);
+            border-radius: 50%;
+            top: -80px;
+            right: -60px;
+        }
+
+        .dash-welcome h3 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin: 0 0 4px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dash-welcome p {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dash-welcome .welcome-icon {
+            font-size: 3rem;
+            opacity: 0.15;
+            position: absolute;
+            right: 32px;
+            bottom: 10px;
+        }
+
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 14px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        border: 1px solid #f0f0f0;
+        transition: all 0.2s;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.09);
+        }
+
+    .stat-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        flex-shrink: 0;
+    }
+
+    .stat-number {
+        font-size: 1.7rem;
+        font-weight: 800;
+        color: #1a1a2e;
+        line-height: 1;
+        margin-bottom: 3px;
+    }
+
+    .stat-label {
+        font-size: 0.78rem;
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .section-title {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+    .bottom-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .info-card {
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        border: 1px solid #f0f0f0;
+        overflow: hidden;
+    }
+
+    .info-card-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid #f5f5f5;
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .cita-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 20px;
+        border-bottom: 1px solid #f8f8f8;
+        transition: background 0.2s;
+    }
+
+        .cita-row:last-child {
+            border-bottom: none;
+        }
+
+        .cita-row:hover {
+            background: #fafbff;
+        }
+
+    .cita-date {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        background: linear-gradient(135deg,#0d6efd,#0056cc);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+        .cita-date .day {
+            font-size: 1rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .cita-date .month {
+            font-size: 0.58rem;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+    .cita-info .cita-client {
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: #1a1a2e;
+    }
+
+    .cita-info .cita-service {
+        font-size: 0.75rem;
+        color: #6c757d;
+        margin-top: 2px;
+    }
+
+    .cita-time {
+        margin-left: auto;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #0d6efd;
+        background: #eff6ff;
+        padding: 4px 10px;
+        border-radius: 8px;
+        white-space: nowrap;
+    }
+
+    .quick-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding: 16px;
+    }
+
+    .quick-btn {
+        padding: 12px;
+        background: #f8fafc;
+        border-radius: 10px;
+        text-decoration: none;
+        color: #1a1a2e;
+        font-size: 0.82rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+        border: 1.5px solid #f0f0f0;
+    }
+
+        .quick-btn:hover {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            color: #166534;
+            transform: translateY(-1px);
+        }
+
+    @@media(max-width:768px) {
+        .stat-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .bottom-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .quick-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<!-- Bienvenida -->
+<div class="dash-welcome">
+    <h3>Mi Panel de Actividad</h3>
+    <p>@DateTime.Now.ToString("dddd, dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-CR"))</p>
+    <i class="bi bi-calendar-heart welcome-icon"></i>
+</div>
+
+<!-- Stats -->
+<div class="section-title">
+    <i class="bi bi-bar-chart-line" style="color:#f97316"></i> Mi resumen
+</div>
+<div class="stat-grid">
+    <div class="stat-card">
+        <div class="stat-icon" style="background:#f8fafc;">
+            <i class="bi bi-calendar-check" style="color:#1a1a2e;"></i>
         </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-success shadow-sm">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="card-title">Citas Activas</h6>
-                        <h2 class="fw-bold">@Model.CitasActivas</h2>
-                    </div>
-                    <i class="bi bi-calendar-event fs-1 opacity-50"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-danger shadow-sm">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="card-title">Citas Canceladas</h6>
-                        <h2 class="fw-bold">@Model.CitasCanceladas</h2>
-                    </div>
-                    <i class="bi bi-calendar-x fs-1 opacity-50"></i>
-                </div>
-            </div>
+        <div>
+            <div class="stat-number">@Model.TotalCitas</div>
+            <div class="stat-label">Total mis citas</div>
         </div>
     </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background:#f0fdf4;">
+            <i class="bi bi-calendar-event" style="color:#22c55e;"></i>
+        </div>
+        <div>
+            <div class="stat-number">@Model.CitasActivas</div>
+            <div class="stat-label">Citas activas</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background:#fef2f2;">
+            <i class="bi bi-calendar-x" style="color:#ef4444;"></i>
+        </div>
+        <div>
+            <div class="stat-number">@Model.CitasCanceladas</div>
+            <div class="stat-label">Canceladas</div>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom -->
+<div class="section-title">
+    <i class="bi bi-grid" style="color:#f97316"></i> Detalles
+</div>
+<div class="bottom-grid">
 
     <!-- Próximas citas -->
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white fw-bold">
-                    <i class="bi bi-clock"></i> Próximas Citas
-                </div>
-                <div class="card-body">
-                    @if (Model.ProximasCitas.Any())
-                    {
-                        <table class="table table-hover align-middle mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Cliente</th>
-                                    <th>Servicio</th>
-                                    <th>Fecha</th>
-                                    <th>Hora</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var cita in Model.ProximasCitas)
-                                {
-                                    <tr>
-                                        <td>@cita.Cliente?.NombreCompleto</td>
-                                        <td>@cita.Servicio?.NombreServicio</td>
-                                        <td>@cita.Fecha.ToString("dd/MM/yyyy")</td>
-                                        <td>@DateTime.Today.Add(cita.Hora).ToString("hh:mm tt")</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    }
-                    else
-                    {
-                        <p class="text-muted text-center">No tenés citas próximas programadas.</p>
-                    }
-                </div>
-            </div>
+    <div class="info-card">
+        <div class="info-card-header">
+            <i class="bi bi-clock" style="color:#0d6efd;"></i> Próximas citas
         </div>
-
-        <!-- Accesos rápidos -->
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-header bg-success text-white fw-bold">
-                    <i class="bi bi-lightning"></i> Accesos Rápidos
+        @if (Model.ProximasCitas.Any())
+        {
+            @foreach (var cita in Model.ProximasCitas)
+            {
+                <div class="cita-row">
+                    <div class="cita-date">
+                        <span class="day">@cita.Fecha.ToString("dd")</span>
+                        <span class="month">@cita.Fecha.ToString("MMM", new System.Globalization.CultureInfo("es-CR"))</span>
+                    </div>
+                    <div class="cita-info">
+                        <div class="cita-client">@cita.Cliente?.NombreCompleto</div>
+                        <div class="cita-service">@cita.Servicio?.NombreServicio</div>
+                    </div>
+                    <div class="cita-time">
+                        @DateTime.Today.Add(cita.Hora).ToString("hh:mm tt")
+                    </div>
                 </div>
-                <div class="card-body d-grid gap-2">
-                    <a asp-controller="Citas" asp-action="Create" class="btn btn-outline-primary">
-                        <i class="bi bi-calendar-plus"></i> Nueva Cita
-                    </a>
-                    <a asp-controller="Citas" asp-action="Index" class="btn btn-outline-dark">
-                        <i class="bi bi-calendar-check"></i> Mis Citas
-                    </a>
-                    <a asp-controller="Clientes" asp-action="Index" class="btn btn-outline-success">
-                        <i class="bi bi-person-check"></i> Clientes
-                    </a>
-                </div>
+            }
+        }
+        else
+        {
+            <div style="padding:40px;text-align:center;color:#aaa;font-size:0.85rem;">
+                <i class="bi bi-calendar-x" style="font-size:2.5rem;display:block;margin-bottom:10px;opacity:0.3;"></i>
+                No tenés citas próximas programadas.
             </div>
+        }
+    </div>
+
+    <!-- Accesos rápidos -->
+    <div class="info-card">
+        <div class="info-card-header">
+            <i class="bi bi-lightning-charge" style="color:#f97316;"></i> Accesos rápidos
+        </div>
+        <div class="quick-grid">
+            <a asp-controller="Citas" asp-action="Create" class="quick-btn">
+                <i class="bi bi-calendar-plus" style="color:#0d6efd;"></i> Nueva cita
+            </a>
+            <a asp-controller="Citas" asp-action="Index" class="quick-btn">
+                <i class="bi bi-calendar-check" style="color:#22c55e;"></i> Mis citas
+            </a>
+            <a asp-controller="Clientes" asp-action="Index" class="quick-btn">
+                <i class="bi bi-people" style="color:#f97316;"></i> Clientes
+            </a>
+            <a asp-controller="Clientes" asp-action="Create" class="quick-btn">
+                <i class="bi bi-person-plus" style="color:#a855f7;"></i> Nuevo cliente
+            </a>
         </div>
     </div>
 </div>

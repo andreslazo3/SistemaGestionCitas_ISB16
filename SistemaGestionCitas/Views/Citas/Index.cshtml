@@ -1,91 +1,423 @@
 ﻿@model IEnumerable<SistemaGestionCitas.Models.Cita>
-
 @{
-    ViewData["Title"] = "Gestión de Citas";
+    ViewData["Title"] = "Citas";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2><i class="bi bi-calendar-check"></i> Gestión de Citas</h2>
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Nueva Cita
-        </a>
-    </div>
-
-    @if (TempData["Exito"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show">
-            @TempData["Exito"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show">
-            @TempData["Error"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
     }
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <table class="table table-hover table-striped align-middle">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Cliente</th>
-                        <th>Servicio</th>
-                        <th>Fecha</th>
-                        <th>Hora</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var cita in Model)
-                    {
-                        <tr>
-                            <td>@cita.Cliente?.NombreCompleto</td>
-                            <td>@cita.Servicio?.NombreServicio</td>
-                            <td>@cita.Fecha.ToString("dd/MM/yyyy")</td>
-                            <td>@DateTime.Today.Add(cita.Hora).ToString("hh:mm tt")</td>
-                            <td>
-                                @if (cita.Estado == SistemaGestionCitas.Models.EstadoCita.Programada)
-                                {
-                                    <span class="badge bg-success">Programada</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-danger">Cancelada</span>
-                                }
-                            </td>
-                            <td>
-                                <a asp-action="Details" asp-route-id="@cita.Id" class="btn btn-sm btn-info text-white">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                                @if (cita.Estado == SistemaGestionCitas.Models.EstadoCita.Programada)
-                                {
-                                    <a asp-action="Edit" asp-route-id="@cita.Id" class="btn btn-sm btn-warning">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <form asp-action="Cancelar" asp-route-id="@cita.Id" method="post" style="display:inline"
-                                          onsubmit="return confirm('¿Está seguro que desea cancelar esta cita?')">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="bi bi-x-circle"></i>
-                                        </button>
-                                    </form>
-                                }
-                            </td>
-                        </tr>
-                    }
-                    @if (!Model.Any())
-                    {
-                        <tr>
-                            <td colspan="6" class="text-center text-muted">No hay citas registradas.</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
+        .page-header h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin: 0;
+        }
+
+            .page-header h2 span {
+                color: #f97316;
+            }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg,#0d6efd,#0056cc);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+        .btn-primary-custom:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(13,110,253,0.35);
+        }
+
+    .filters-bar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+        align-items: center;
+    }
+
+    .filter-btn {
+        padding: 7px 16px;
+        border-radius: 20px;
+        border: 1.5px solid #e5e7eb;
+        background: white;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        color: #6c757d;
+    }
+
+        .filter-btn:hover {
+            border-color: #0d6efd;
+            color: #0d6efd;
+        }
+
+        .filter-btn.active-all {
+            background: #0d6efd;
+            color: white;
+            border-color: #0d6efd;
+        }
+
+        .filter-btn.active-prog {
+            background: #22c55e;
+            color: white;
+            border-color: #22c55e;
+        }
+
+        .filter-btn.active-canc {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+
+    .data-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+        overflow: hidden;
+    }
+
+    .data-card-header {
+        padding: 18px 24px;
+        border-bottom: 1px solid #f5f5f5;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .count-badge {
+        background: #eff6ff;
+        color: #0d6efd;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        font-weight: 700;
+    }
+
+    .search-box {
+        position: relative;
+        max-width: 280px;
+    }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .search-box input {
+            padding: 8px 12px 8px 34px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+            .search-box input:focus {
+                border-color: #0d6efd;
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(13,110,253,0.1);
+            }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .data-table thead th {
+            background: #f8fafc;
+            padding: 12px 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #6c757d;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .data-table tbody td {
+            padding: 14px 20px;
+            font-size: 0.88rem;
+            color: #333;
+            border-bottom: 1px solid #f8f8f8;
+            vertical-align: middle;
+        }
+
+        .data-table tbody tr:hover {
+            background: #fafbff;
+        }
+
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+    .badge-prog {
+        background: #f0fdf4;
+        color: #166534;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .badge-canc {
+        background: #fef2f2;
+        color: #991b1b;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .client-cell {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .client-dot {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: linear-gradient(135deg,#0d6efd,#0056cc);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.8rem;
+        flex-shrink: 0;
+    }
+
+    .action-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+        }
+
+    .action-btn-view {
+        background: #eff6ff;
+        color: #0d6efd;
+    }
+
+        .action-btn-view:hover {
+            background: #0d6efd;
+            color: white;
+        }
+
+    .action-btn-edit {
+        background: #fff7ed;
+        color: #f97316;
+    }
+
+        .action-btn-edit:hover {
+            background: #f97316;
+            color: white;
+        }
+
+    .action-btn-cancel {
+        background: #fff0f0;
+        color: #ef4444;
+    }
+
+        .action-btn-cancel:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #aaa;
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+</style>
+
+<div class="page-header">
+    <h2><i class="bi bi-calendar-check me-2" style="color:#0d6efd"></i>Gestión de <span>Citas</span></h2>
+    <a asp-action="Create" class="btn-primary-custom">
+        <i class="bi bi-calendar-plus"></i> Nueva Cita
+    </a>
 </div>
+
+<div class="filters-bar">
+    <button class="filter-btn active-all" onclick="filterCitas('all', this)">
+        <i class="bi bi-list me-1"></i> Todas
+    </button>
+    <button class="filter-btn" onclick="filterCitas('Programada', this)">
+        <i class="bi bi-check-circle me-1"></i> Programadas
+    </button>
+    <button class="filter-btn" onclick="filterCitas('Cancelada', this)">
+        <i class="bi bi-x-circle me-1"></i> Canceladas
+    </button>
+</div>
+
+<div class="data-card">
+    <div class="data-card-header">
+        <span class="count-badge">
+            <i class="bi bi-calendar-check me-1"></i>
+            @Model.Count() citas
+        </span>
+        <div class="search-box">
+            <i class="bi bi-search"></i>
+            <input type="text" id="searchInput" placeholder="Buscar cita..." />
+        </div>
+    </div>
+
+    <table class="data-table" id="citasTable">
+        <thead>
+            <tr>
+                <th>Cliente</th>
+                <th>Servicio</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th style="text-align:center">Estado</th>
+                <th style="text-align:center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in Model)
+            {
+                <tr data-estado="@c.Estado.ToString()">
+                    <td>
+                        <div class="client-cell">
+                            <div class="client-dot">
+                                @c.Cliente?.NombreCompleto.Substring(0, 1).ToUpper()
+                            </div>
+                            <span style="font-weight:600;">@c.Cliente?.NombreCompleto</span>
+                        </div>
+                    </td>
+                    <td>
+                        <i class="bi bi-briefcase me-1" style="color:#f97316;font-size:0.8rem;"></i>
+                        @c.Servicio?.NombreServicio
+                    </td>
+                    <td>
+                        <i class="bi bi-calendar3 me-1" style="color:#6c757d;font-size:0.8rem;"></i>
+                        @c.Fecha.ToString("dd/MM/yyyy")
+                    </td>
+                    <td>
+                        <i class="bi bi-clock me-1" style="color:#6c757d;font-size:0.8rem;"></i>
+                        @DateTime.Today.Add(c.Hora).ToString("hh:mm tt")
+                    </td>
+                    <td style="text-align:center">
+                        @if (c.Estado == SistemaGestionCitas.Models.EstadoCita.Programada)
+                        {
+                            <span class="badge-prog">
+                                <i class="bi bi-check-circle-fill"></i> Programada
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge-canc">
+                                <i class="bi bi-x-circle-fill"></i> Cancelada
+                            </span>
+                        }
+                    </td>
+                    <td style="text-align:center">
+                        <div style="display:flex;gap:6px;justify-content:center;">
+                            <a asp-action="Details" asp-route-id="@c.Id" class="action-btn action-btn-view" title="Ver detalle">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            @if (c.Estado == SistemaGestionCitas.Models.EstadoCita.Programada)
+                            {
+                                <a asp-action="Edit" asp-route-id="@c.Id" class="action-btn action-btn-edit" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form asp-action="Cancelar" asp-route-id="@c.Id" method="post" style="display:inline"
+                                      onsubmit="return confirm('¿Cancelar esta cita?')">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="action-btn action-btn-cancel" title="Cancelar cita">
+                                        <i class="bi bi-x-circle"></i>
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <i class="bi bi-calendar-x"></i>
+                            <p>
+                                No hay citas registradas.<br>
+                                <a asp-action="Create" style="color:#0d6efd;">Registrá la primera</a>
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('searchInput').addEventListener('keyup', function () {
+            const term = this.value.toLowerCase();
+            document.querySelectorAll('#citasTable tbody tr').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+            });
+        });
+
+        function filterCitas(estado, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.className = 'filter-btn';
+            });
+            if (estado === 'all') btn.classList.add('active-all');
+            else if (estado === 'Programada') btn.classList.add('active-prog');
+            else btn.classList.add('active-canc');
+
+            document.querySelectorAll('#citasTable tbody tr').forEach(row => {
+                if (estado === 'all') row.style.display = '';
+                else row.style.display = row.dataset.estado === estado ? '' : 'none';
+            });
+        }
+    </script>
+}

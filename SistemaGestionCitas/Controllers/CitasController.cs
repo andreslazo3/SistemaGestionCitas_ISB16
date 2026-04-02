@@ -51,18 +51,20 @@ namespace SistemaGestionCitas.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ClienteId,ServicioId,Fecha,Hora")] Cita cita)
         {
+            
+            ModelState.Remove("Usuario");
+            ModelState.Remove("UsuarioId");
+            ModelState.Remove("Cliente");
+            ModelState.Remove("Servicio");
+
             // Regla: no se pueden crear citas en fechas pasadas
             if (cita.Fecha.Date < DateTime.Today)
-            {
                 ModelState.AddModelError("Fecha", "No se pueden registrar citas en fechas pasadas.");
-            }
 
             // Regla: no se pueden crear citas con servicios inactivos
             var servicio = await _context.Servicios.FindAsync(cita.ServicioId);
             if (servicio != null && !servicio.Activo)
-            {
                 ModelState.AddModelError("ServicioId", "El servicio seleccionado está inactivo.");
-            }
 
             if (ModelState.IsValid)
             {
@@ -112,7 +114,11 @@ namespace SistemaGestionCitas.Controllers
         {
             if (id != cita.Id) return NotFound();
 
-            // Verificar que no esté cancelada
+            // Limpiar errores de navegación
+            ModelState.Remove("Usuario");
+            ModelState.Remove("Cliente");
+            ModelState.Remove("Servicio");
+
             var citaOriginal = await _context.Citas.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
             if (citaOriginal == null) return NotFound();
 
@@ -122,15 +128,12 @@ namespace SistemaGestionCitas.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Usuario solo puede editar sus propias citas
             if (!User.IsInRole("Administrador") && citaOriginal.UsuarioId != _userManager.GetUserId(User))
                 return Forbid();
 
-            // Regla: no fechas pasadas
             if (cita.Fecha.Date < DateTime.Today)
                 ModelState.AddModelError("Fecha", "No se pueden registrar citas en fechas pasadas.");
 
-            // Regla: servicio activo
             var servicio = await _context.Servicios.FindAsync(cita.ServicioId);
             if (servicio != null && !servicio.Activo)
                 ModelState.AddModelError("ServicioId", "El servicio seleccionado está inactivo.");

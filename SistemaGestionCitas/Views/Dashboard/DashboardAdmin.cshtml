@@ -1,170 +1,360 @@
 ﻿@model SistemaGestionCitas.Controllers.DashboardAdminViewModel
-
 @{
-    ViewData["Title"] = "Dashboard Administrativo";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4"><i class="bi bi-speedometer2"></i> Dashboard Administrativo</h2>
+<style>
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+        transition: all 0.2s;
+    }
 
-    <!-- Tarjetas de resumen -->
-    <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            <div class="card text-white bg-primary shadow-sm">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="card-title">Usuarios</h6>
-                        <h2 class="fw-bold">@Model.TotalUsuarios</h2>
-                    </div>
-                    <i class="bi bi-people fs-1 opacity-50"></i>
-                </div>
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+
+    .stat-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #1a1a2e;
+        line-height: 1;
+        margin-bottom: 4px;
+    }
+
+    .stat-label {
+        font-size: 0.82rem;
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .section-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin: 28px 0 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+    .info-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+        overflow: hidden;
+    }
+
+    .info-card-header {
+        padding: 16px 22px;
+        border-bottom: 1px solid #f5f5f5;
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .citas-bar {
+        padding: 20px 22px;
+    }
+
+    .bar-row {
+        margin-bottom: 16px;
+    }
+
+        .bar-row:last-child {
+            margin-bottom: 0;
+        }
+
+    .bar-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
+        font-size: 0.82rem;
+    }
+
+        .bar-label span:first-child {
+            font-weight: 600;
+            color: #444;
+        }
+
+        .bar-label span:last-child {
+            font-weight: 700;
+        }
+
+    .bar-track {
+        height: 10px;
+        background: #f0f0f0;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .bar-fill {
+        height: 100%;
+        border-radius: 20px;
+        transition: width 1s ease;
+    }
+
+    .top-servicio-row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 22px;
+        border-bottom: 1px solid #f8f8f8;
+    }
+
+        .top-servicio-row:last-child {
+            border-bottom: none;
+        }
+
+    .rank-badge {
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+
+    .top-info {
+        flex: 1;
+    }
+
+    .top-name {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: #1a1a2e;
+    }
+
+    .top-count {
+        font-size: 0.75rem;
+        color: #6c757d;
+    }
+
+    .top-num {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #1a1a2e;
+    }
+
+    .quick-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding: 16px;
+    }
+
+    .quick-btn {
+        padding: 12px;
+        border-radius: 10px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        border: 1.5px solid;
+    }
+
+        .quick-btn:hover {
+            transform: translateY(-2px);
+        }
+</style>
+
+<!-- Stats principales -->
+<div class="section-title">
+    <i class="bi bi-bar-chart-line" style="color:#f97316"></i> Resumen global
+</div>
+<div class="row g-3 mb-2">
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:#fdf4ff;">
+                <i class="bi bi-people" style="color:#a855f7;"></i>
+            </div>
+            <div>
+                <div class="stat-number">@Model.TotalUsuarios</div>
+                <div class="stat-label">Usuarios</div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-success shadow-sm">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="card-title">Clientes</h6>
-                        <h2 class="fw-bold">@Model.TotalClientes</h2>
-                    </div>
-                    <i class="bi bi-person-check fs-1 opacity-50"></i>
-                </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:#eff6ff;">
+                <i class="bi bi-person-check" style="color:#0d6efd;"></i>
+            </div>
+            <div>
+                <div class="stat-number">@Model.TotalClientes</div>
+                <div class="stat-label">Clientes</div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-info shadow-sm">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="card-title">Servicios Activos</h6>
-                        <h2 class="fw-bold">@Model.TotalServiciosActivos</h2>
-                    </div>
-                    <i class="bi bi-gear fs-1 opacity-50"></i>
-                </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:#f0fdf4;">
+                <i class="bi bi-gear" style="color:#22c55e;"></i>
+            </div>
+            <div>
+                <div class="stat-number">@Model.TotalServiciosActivos</div>
+                <div class="stat-label">Servicios activos</div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-secondary shadow-sm">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="card-title">Servicios Inactivos</h6>
-                        <h2 class="fw-bold">@Model.TotalServiciosInactivos</h2>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:#fff7ed;">
+                <i class="bi bi-calendar-check" style="color:#f97316;"></i>
+            </div>
+            <div>
+                <div class="stat-number">@Model.TotalCitas</div>
+                <div class="stat-label">Total citas</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Segunda fila -->
+<div class="section-title">
+    <i class="bi bi-clipboard-data" style="color:#f97316"></i> Detalle de citas y servicios
+</div>
+<div class="row g-3">
+    <!-- Barra de citas -->
+    <div class="col-md-4">
+        <div class="info-card h-100">
+            <div class="info-card-header">
+                <i class="bi bi-calendar-check" style="color:#0d6efd;"></i> Estado de Citas
+            </div>
+            <div class="citas-bar">
+                @{
+                    var total = Model.TotalCitas > 0 ? Model.TotalCitas : 1;
+                    var pctProg = (int)((Model.CitasProgramadas * 100.0) / total);
+                    var pctCanc = (int)((Model.CitasCanceladas * 100.0) / total);
+                }
+                <div class="bar-row">
+                    <div class="bar-label">
+                        <span><i class="bi bi-check-circle-fill me-1" style="color:#22c55e;"></i>Programadas</span>
+                        <span style="color:#22c55e;">@Model.CitasProgramadas</span>
                     </div>
-                    <i class="bi bi-gear-fill fs-1 opacity-50"></i>
+                    <div class="bar-track">
+                        <div class="bar-fill" style="width:@pctProg%;background:linear-gradient(90deg,#22c55e,#16a34a);"></div>
+                    </div>
+                </div>
+                <div class="bar-row">
+                    <div class="bar-label">
+                        <span><i class="bi bi-x-circle-fill me-1" style="color:#ef4444;"></i>Canceladas</span>
+                        <span style="color:#ef4444;">@Model.CitasCanceladas</span>
+                    </div>
+                    <div class="bar-track">
+                        <div class="bar-fill" style="width:@pctCanc%;background:linear-gradient(90deg,#ef4444,#dc2626);"></div>
+                    </div>
+                </div>
+                <div class="bar-row">
+                    <div class="bar-label">
+                        <span><i class="bi bi-gear me-1" style="color:#6c757d;"></i>Servicios inactivos</span>
+                        <span style="color:#6c757d;">@Model.TotalServiciosInactivos</span>
+                    </div>
+                    <div class="bar-track">
+                        <div class="bar-fill" style="width:40%;background:#e5e7eb;"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Citas -->
-    <div class="row g-3 mb-4">
-        <div class="col-md-4">
-            <div class="card text-white bg-dark shadow-sm">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="card-title">Total de Citas</h6>
-                        <h2 class="fw-bold">@Model.TotalCitas</h2>
-                    </div>
-                    <i class="bi bi-calendar-check fs-1 opacity-50"></i>
-                </div>
+    <!-- Top servicios -->
+    <div class="col-md-4">
+        <div class="info-card h-100">
+            <div class="info-card-header">
+                <i class="bi bi-trophy" style="color:#f97316;"></i> Top 3 Servicios
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-success shadow-sm">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="card-title">Citas Programadas</h6>
-                        <h2 class="fw-bold">@Model.CitasProgramadas</h2>
+            @if (Model.TopServicios.Any())
+            {
+                @for (int i = 0; i < Model.TopServicios.Count; i++)
+                {
+                    <div class="top-servicio-row">
+                        <div class="rank-badge" style="background:@(i == 0 ? "#fff7ed" : i == 1 ? "#f8fafc" : "#fef2f2");">
+                            @(i == 0 ? "🥇" : i == 1 ? "🥈" : "🥉")
+                        </div>
+                        <div class="top-info">
+                            <div class="top-name">@Model.TopServicios[i].NombreServicio</div>
+                            <div class="top-count">citas registradas</div>
+                        </div>
+                        <div class="top-num">@Model.TopServicios[i].TotalCitas</div>
                     </div>
-                    <i class="bi bi-calendar-event fs-1 opacity-50"></i>
+                }
+            }
+            else
+            {
+                <div style="padding:30px;text-align:center;color:#aaa;font-size:0.85rem;">
+                    <i class="bi bi-calendar-x" style="font-size:2rem;display:block;margin-bottom:8px;opacity:0.4;"></i>
+                    Sin citas registradas aún
                 </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-danger shadow-sm">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="card-title">Citas Canceladas</h6>
-                        <h2 class="fw-bold">@Model.CitasCanceladas</h2>
-                    </div>
-                    <i class="bi bi-calendar-x fs-1 opacity-50"></i>
-                </div>
-            </div>
+            }
         </div>
     </div>
 
-    <!-- Top 3 Servicios -->
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header bg-warning fw-bold">
-                    <i class="bi bi-trophy"></i> Top 3 Servicios más Solicitados
-                </div>
-                <div class="card-body">
-                    @if (Model.TopServicios.Any())
-                    {
-                        <table class="table table-hover align-middle mb-0">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Servicio</th>
-                                    <th class="text-center">Citas</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @for (int i = 0; i < Model.TopServicios.Count; i++)
-                                {
-                                    <tr>
-                                        <td>
-                                            @if (i == 0)
-                                            {
-                                                <span class="badge bg-warning text-dark">🥇</span>
-                                            }
-                                            else if (i == 1)
-                                            {
-
-                                                <span class="badge bg-secondary">🥈</span>
-                                            }
-                                            else
-                                            {
-
-                                                <span class="badge bg-danger">🥉</span>
-                                            }
-                                        </td>
-                                        <td>@Model.TopServicios[i].NombreServicio</td>
-                                        <td class="text-center fw-bold">@Model.TopServicios[i].TotalCitas</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    }
-                    else
-                    {
-                        <p class="text-muted text-center">No hay citas registradas aún.</p>
-                    }
-                </div>
+    <!-- Accesos rápidos -->
+    <div class="col-md-4">
+        <div class="info-card h-100">
+            <div class="info-card-header">
+                <i class="bi bi-lightning-charge" style="color:#f97316;"></i> Accesos rápidos
             </div>
-        </div>
-
-        <!-- Accesos rápidos -->
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white fw-bold">
-                    <i class="bi bi-lightning"></i> Accesos Rápidos
-                </div>
-                <div class="card-body d-grid gap-2">
-                    <a asp-controller="Usuarios" asp-action="Index" class="btn btn-outline-primary">
-                        <i class="bi bi-people"></i> Gestionar Usuarios
-                    </a>
-                    <a asp-controller="Clientes" asp-action="Index" class="btn btn-outline-success">
-                        <i class="bi bi-person-check"></i> Gestionar Clientes
-                    </a>
-                    <a asp-controller="Servicios" asp-action="Index" class="btn btn-outline-info">
-                        <i class="bi bi-gear"></i> Gestionar Servicios
-                    </a>
-                    <a asp-controller="Citas" asp-action="Index" class="btn btn-outline-dark">
-                        <i class="bi bi-calendar-check"></i> Ver Todas las Citas
-                    </a>
-                </div>
+            <div class="quick-grid">
+                <a asp-controller="Usuarios" asp-action="Create"
+                   class="quick-btn" style="background:#fdf4ff;color:#a855f7;border-color:#e9d5ff;">
+                    <i class="bi bi-person-plus"></i> Nuevo usuario
+                </a>
+                <a asp-controller="Clientes" asp-action="Create"
+                   class="quick-btn" style="background:#eff6ff;color:#0d6efd;border-color:#bfdbfe;">
+                    <i class="bi bi-person-plus"></i> Nuevo cliente
+                </a>
+                <a asp-controller="Servicios" asp-action="Create"
+                   class="quick-btn" style="background:#fff7ed;color:#f97316;border-color:#fed7aa;">
+                    <i class="bi bi-plus-circle"></i> Nuevo servicio
+                </a>
+                <a asp-controller="Citas" asp-action="Create"
+                   class="quick-btn" style="background:#f0fdf4;color:#22c55e;border-color:#bbf7d0;">
+                    <i class="bi bi-calendar-plus"></i> Nueva cita
+                </a>
+                <a asp-controller="Citas" asp-action="Index"
+                   class="quick-btn" style="background:#f8fafc;color:#475569;border-color:#e2e8f0;">
+                    <i class="bi bi-calendar-check"></i> Ver citas
+                </a>
+                <a asp-controller="Servicios" asp-action="Index"
+                   class="quick-btn" style="background:#f8fafc;color:#475569;border-color:#e2e8f0;">
+                    <i class="bi bi-gear"></i> Ver servicios
+                </a>
             </div>
         </div>
     </div>

@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="icon" href="~/images/calendario.png">
     <style>
         * {
             box-sizing: border-box;
@@ -274,13 +275,13 @@
     {
         <!-- SIDEBAR -->
         <aside class="sidebar">
-            <div class="sidebar-brand">
+            <a asp-controller="Home" asp-action="Index" class="sidebar-brand" style="text-decoration:none;">
                 <img src="~/images/uisil.png" alt="UISIL" />
                 <div class="brand-text">
                     <span class="brand-title">Sistema de Citas</span>
                     <span class="brand-sub">UISIL &mdash; ISB-16</span>
                 </div>
-            </div>
+            </a>
 
             <nav class="sidebar-nav">
                 <div class="nav-section-title">Principal</div>

@@ -1,50 +1,258 @@
 ﻿@model SistemaGestionCitas.Models.Cita
-
 @{
     ViewData["Title"] = "Detalle de Cita";
 }
 
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header bg-info text-white">
-                    <h4><i class="bi bi-calendar-event"></i> Detalle de Cita</h4>
+<style>
+    .form-page-wrapper {
+        max-width: 540px;
+        margin: 0 auto;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #6c757d;
+        font-size: 0.85rem;
+        text-decoration: none;
+        margin-bottom: 20px;
+        transition: color 0.2s;
+    }
+
+        .back-link:hover {
+            color: #0d6efd;
+        }
+
+    .detail-card {
+        background: white;
+        border-radius: 18px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+        overflow: hidden;
+        border: 1px solid #f0f0f0;
+    }
+
+    .detail-header {
+        background: linear-gradient(135deg,#0a1f44,#0d3b7a);
+        padding: 32px;
+        color: white;
+        text-align: center;
+    }
+
+    .detail-avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: linear-gradient(135deg,#f97316,#ea580c);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        color: white;
+        margin: 0 auto 14px;
+    }
+
+    .detail-header h3 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin: 0 0 8px;
+    }
+
+    .badge-prog {
+        background: rgba(34,197,94,0.2);
+        color: #86efac;
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .badge-canc {
+        background: rgba(239,68,68,0.2);
+        color: #fca5a5;
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .detail-body {
+        padding: 28px 32px;
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        padding: 14px 0;
+        border-bottom: 1px solid #f5f5f5;
+        gap: 14px;
+    }
+
+        .info-row:last-of-type {
+            border-bottom: none;
+        }
+
+    .info-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        flex-shrink: 0;
+    }
+
+    .info-content .info-label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #aaa;
+        margin-bottom: 2px;
+    }
+
+    .info-content .info-value {
+        font-size: 0.92rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .detail-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .btn-edit {
+        flex: 1;
+        padding: 11px;
+        background: linear-gradient(135deg,#f97316,#ea580c);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 0.88rem;
+        font-weight: 700;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+        .btn-edit:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(249,115,22,0.35);
+        }
+
+    .btn-back {
+        flex: 1;
+        padding: 11px;
+        background: #f8f9fa;
+        color: #6c757d;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+        .btn-back:hover {
+            background: #e9ecef;
+            color: #495057;
+        }
+</style>
+
+<div class="form-page-wrapper">
+    <a asp-action="Index" class="back-link">
+        <i class="bi bi-arrow-left"></i> Volver a Citas
+    </a>
+
+    <div class="detail-card">
+        <div class="detail-header">
+            <div class="detail-avatar"><i class="bi bi-calendar-event"></i></div>
+            <h3>@Model.Cliente?.NombreCompleto</h3>
+            @if (Model.Estado == SistemaGestionCitas.Models.EstadoCita.Programada)
+            {
+                <span class="badge-prog"><i class="bi bi-check-circle-fill"></i> Programada</span>
+            }
+            else
+            {
+                <span class="badge-canc"><i class="bi bi-x-circle-fill"></i> Cancelada</span>
+            }
+        </div>
+        <div class="detail-body">
+            <div class="info-row">
+                <div class="info-icon" style="background:#eff6ff;color:#0d6efd;">
+                    <i class="bi bi-person"></i>
                 </div>
-                <div class="card-body">
-                    <dl class="row">
-                        <dt class="col-sm-4">Cliente</dt>
-                        <dd class="col-sm-8">@Model.Cliente?.NombreCompleto</dd>
+                <div class="info-content">
+                    <div class="info-label">Cliente</div>
+                    <div class="info-value">@Model.Cliente?.NombreCompleto</div>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-icon" style="background:#fff7ed;color:#f97316;">
+                    <i class="bi bi-briefcase"></i>
+                </div>
+                <div class="info-content">
+                    <div class="info-label">Servicio</div>
+                    <div class="info-value">@Model.Servicio?.NombreServicio</div>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-icon" style="background:#f0fdf4;color:#22c55e;">
+                    <i class="bi bi-calendar3"></i>
+                </div>
+                <div class="info-content">
+                    <div class="info-label">Fecha</div>
+                    <div class="info-value">@Model.Fecha.ToString("dddd, dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-CR"))</div>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-icon" style="background:#fdf4ff;color:#a855f7;">
+                    <i class="bi bi-clock"></i>
+                </div>
+                <div class="info-content">
+                    <div class="info-label">Hora</div>
+                    <div class="info-value">@DateTime.Today.Add(Model.Hora).ToString("hh:mm tt")</div>
+                </div> 
+            </div>
+            <div class="info-row">
+                <div class="info-icon" style="background:#f8fafc;color:#6c757d;">
+                    <i class="bi bi-person-gear"></i>
+                </div>
+                <div class="info-content">
+                    <div class="info-label">Usuario Responsable</div>
+                    <div class="info-value">@Model.Usuario?.Email</div>
+                </div>
+            </div>
 
-                        <dt class="col-sm-4">Servicio</dt>
-                        <dd class="col-sm-8">@Model.Servicio?.NombreServicio</dd>
-
-                        <dt class="col-sm-4">Fecha</dt>
-                        <dd class="col-sm-8">@Model.Fecha.ToString("dd/MM/yyyy")</dd>
-
-                        <dt class="col-sm-4">Hora</dt>
-                        <dd class="col-sm-8">@DateTime.Today.Add(Model.Hora).ToString("hh:mm tt")</dd>
-
-                        <dt class="col-sm-4">Estado</dt>
-                        <dd class="col-sm-8">
-                            @if (Model.Estado == SistemaGestionCitas.Models.EstadoCita.Programada)
-                            {
-                                <span class="badge bg-success">Programada</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-danger">Cancelada</span>
-                            }
-                        </dd>
-
-                        <dt class="col-sm-4">Usuario</dt>
-                        <dd class="col-sm-8">@Model.Usuario?.Email</dd>
-                    </dl>
-
-                    <a asp-action="Index" class="btn btn-secondary">
-                        <i class="bi bi-arrow-left"></i> Volver
+            <div class="detail-actions">
+                <a asp-action="Index" class="btn-back">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+                @if (Model.Estado == SistemaGestionCitas.Models.EstadoCita.Programada)
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-edit">
+                        <i class="bi bi-pencil"></i> Editar
                     </a>
-                </div>
+                }
             </div>
         </div>
     </div>

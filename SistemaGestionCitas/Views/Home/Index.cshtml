@@ -255,17 +255,20 @@
             </div>
         </a>
     </div>
-    <div class="col-md-3 col-6">
-        <a asp-controller="Servicios" asp-action="Index" class="stat-card">
-            <div class="stat-icon" style="background:#fff7ed;">
-                <i class="bi bi-gear" style="color:#f97316;"></i>
-            </div>
-            <div class="stat-info">
-                <div class="stat-number" id="statServicios">—</div>
-                <div class="stat-label">Servicios activos</div>
-            </div>
-        </a>
-    </div>
+    @if (User.IsInRole("Administrador"))
+    {
+        <div class="col-md-3 col-6">
+            <a asp-controller="Servicios" asp-action="Index" class="stat-card">
+                <div class="stat-icon" style="background:#fff7ed;">
+                    <i class="bi bi-gear" style="color:#f97316;"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-number" id="statServicios">—</div>
+                    <div class="stat-label">Servicios activos</div>
+                </div>
+            </a>
+        </div>
+    }
     <div class="col-md-3 col-6">
         <a asp-controller="Citas" asp-action="Index" class="stat-card">
             <div class="stat-icon" style="background:#f0fdf4;">

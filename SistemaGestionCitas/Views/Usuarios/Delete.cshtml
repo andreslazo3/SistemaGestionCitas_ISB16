@@ -1,43 +1,297 @@
 ﻿@model SistemaGestionCitas.Controllers.UsuarioViewModel
-
 @{
     ViewData["Title"] = "Eliminar Usuario";
 }
 
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-5">
-            <div class="card shadow-sm border-danger">
-                <div class="card-header bg-danger text-white">
-                    <h4><i class="bi bi-exclamation-triangle"></i> Eliminar Usuario</h4>
-                </div>
-                <div class="card-body">
-                    <p class="text-danger fw-bold">¿Está seguro que desea eliminar este usuario?</p>
+<style>
+    .form-page-wrapper {
+        max-width: 500px;
+        margin: 0 auto;
+    }
 
-                    <dl class="row">
-                        <dt class="col-sm-4">Correo</dt>
-                        <dd class="col-sm-8">@Model.Email</dd>
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #6c757d;
+        font-size: 0.85rem;
+        text-decoration: none;
+        margin-bottom: 20px;
+        transition: color 0.2s;
+    }
 
-                        <dt class="col-sm-4">Rol</dt>
-                        <dd class="col-sm-8">@Model.Rol</dd>
+        .back-link:hover {
+            color: #a855f7;
+        }
 
-                        <dt class="col-sm-4">Estado</dt>
-                        <dd class="col-sm-8">@(Model.Activo ? "Activo" : "Inactivo")</dd>
-                    </dl>
+    .delete-card {
+        background: white;
+        border-radius: 18px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+        overflow: hidden;
+        border: 1px solid #fee2e2;
+    }
 
-                    <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
-                        @Html.AntiForgeryToken()
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-danger">
-                                <i class="bi bi-trash"></i> Confirmar Eliminación
-                            </button>
-                            <a asp-action="Index" class="btn btn-secondary">
-                                <i class="bi bi-arrow-left"></i> Cancelar
-                            </a>
-                        </div>
-                    </form>
+    .delete-card-header {
+        background: linear-gradient(135deg,#991b1b,#dc2626);
+        padding: 28px 32px;
+        color: white;
+        text-align: center;
+    }
+
+    .delete-icon {
+        width: 64px;
+        height: 64px;
+        background: rgba(255,255,255,0.15);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+        font-size: 1.8rem;
+    }
+
+    .delete-card-header h3 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin: 0 0 4px;
+    }
+
+    .delete-card-header p {
+        font-size: 0.82rem;
+        opacity: 0.75;
+        margin: 0;
+    }
+
+    .delete-card-body {
+        padding: 32px;
+    }
+
+    .user-preview {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px;
+        background: #f8fafc;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+
+    .user-avatar-lg {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: linear-gradient(135deg,#a855f7,#7c3aed);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .user-preview-info .user-email {
+        font-weight: 700;
+        color: #1a1a2e;
+        font-size: 0.95rem;
+    }
+
+    .user-preview-info .user-role {
+        font-size: 0.78rem;
+        color: #6c757d;
+        margin-top: 2px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #f5f5f5;
+    }
+
+        .info-row:last-of-type {
+            border-bottom: none;
+        }
+
+    .info-label {
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #aaa;
+    }
+
+    .info-value {
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .warning-box {
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        border-radius: 10px;
+        padding: 12px 16px;
+        margin: 20px 0;
+        font-size: 0.83rem;
+        color: #9a3412;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .btn-delete {
+        flex: 1;
+        padding: 12px;
+        background: linear-gradient(135deg,#dc2626,#b91c1c);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+        .btn-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220,38,38,0.35);
+        }
+
+    .btn-cancel {
+        flex: 1;
+        padding: 12px;
+        background: #f8f9fa;
+        color: #6c757d;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+        .btn-cancel:hover {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+    .badge-admin {
+        background: #eff6ff;
+        color: #1d4ed8;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 700;
+    }
+
+    .badge-user {
+        background: #f8fafc;
+        color: #475569;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 700;
+    }
+
+    .badge-active {
+        background: #f0fdf4;
+        color: #166534;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 700;
+    }
+
+    .badge-inactive {
+        background: #fef2f2;
+        color: #991b1b;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 700;
+    }
+</style>
+
+<div class="form-page-wrapper">
+    <a asp-action="Index" class="back-link">
+        <i class="bi bi-arrow-left"></i> Volver a Usuarios
+    </a>
+
+    <div class="delete-card">
+        <div class="delete-card-header">
+            <div class="delete-icon"><i class="bi bi-person-x"></i></div>
+            <h3>Eliminar Usuario</h3>
+            <p>Esta acción no se puede deshacer</p>
+        </div>
+        <div class="delete-card-body">
+            <div class="user-preview">
+                <div class="user-avatar-lg">@Model.Email.Substring(0, 1).ToUpper()</div>
+                <div class="user-preview-info">
+                    <div class="user-email">@Model.Email</div>
+                    <div class="user-role">@Model.Rol</div>
                 </div>
             </div>
+
+            <div class="info-row">
+                <span class="info-label">Rol</span>
+                <span class="info-value">
+                    @if (Model.Rol == "Administrador")
+                    {
+                        <span class="badge-admin"><i class="bi bi-shield-check me-1"></i>Administrador</span>
+                    }
+                    else
+                    {
+                        <span class="badge-user"><i class="bi bi-person me-1"></i>Usuario</span>
+                    }
+                </span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Estado</span>
+                <span class="info-value">
+                    @if (Model.Activo)
+                    {
+                        <span class="badge-active"><i class="bi bi-check-circle me-1"></i>Activo</span>
+                    }
+                    else
+                    {
+                        <span class="badge-inactive"><i class="bi bi-x-circle me-1"></i>Inactivo</span>
+                    }
+                </span>
+            </div>
+
+            <div class="warning-box">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                ¿Estás seguro que querés eliminar a <strong>@Model.Email</strong>? Esta acción es permanente y no se puede revertir.
+            </div>
+
+            <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="form-actions">
+                    <a asp-action="Index" class="btn-cancel">
+                        <i class="bi bi-x"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn-delete">
+                        <i class="bi bi-trash"></i> Eliminar
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
