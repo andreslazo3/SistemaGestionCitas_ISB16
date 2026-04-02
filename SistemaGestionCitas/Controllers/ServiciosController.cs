@@ -138,6 +138,24 @@ namespace SistemaGestionCitas.Controllers
             return View(servicio);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleActivo(int id)
+        {
+            var servicio = await _context.Servicios.FindAsync(id);
+            if (servicio == null) return NotFound();
+
+            servicio.Activo = !servicio.Activo;
+            _context.Update(servicio);
+            await _context.SaveChangesAsync();
+
+            TempData["Exito"] = servicio.Activo
+                ? $"Servicio '{servicio.NombreServicio}' activado."
+                : $"Servicio '{servicio.NombreServicio}' desactivado.";
+
+            return RedirectToAction(nameof(Index));
+        }
+
         // POST: Servicios/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

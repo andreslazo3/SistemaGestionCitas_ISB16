@@ -1,42 +1,210 @@
 ﻿@model SistemaGestionCitas.Models.Cliente
-
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalle de Cliente";
 }
 
-<h1>Details</h1>
+<style>
+    .form-page-wrapper {
+        max-width: 520px;
+        margin: 0 auto;
+    }
 
-<div>
-    <h4>Cliente</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Identificacion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Identificacion)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NombreCompleto)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NombreCompleto)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Telefono)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Telefono)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Correo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Correo)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #6c757d;
+        font-size: 0.85rem;
+        text-decoration: none;
+        margin-bottom: 20px;
+        transition: color 0.2s;
+    }
+
+        .back-link:hover {
+            color: #0d6efd;
+        }
+
+    .detail-card {
+        background: white;
+        border-radius: 18px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+        overflow: hidden;
+        border: 1px solid #f0f0f0;
+    }
+
+    .detail-header {
+        background: linear-gradient(135deg,#0a1f44,#0d3b7a);
+        padding: 32px;
+        color: white;
+        text-align: center;
+    }
+
+    .detail-avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: linear-gradient(135deg,#f97316,#ea580c);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: white;
+        margin: 0 auto 14px;
+    }
+
+    .detail-header h3 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin: 0 0 4px;
+    }
+
+    .detail-header p {
+        font-size: 0.82rem;
+        opacity: 0.6;
+        margin: 0;
+    }
+
+    .detail-body {
+        padding: 28px 32px;
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        padding: 14px 0;
+        border-bottom: 1px solid #f5f5f5;
+        gap: 14px;
+    }
+
+        .info-row:last-of-type {
+            border-bottom: none;
+        }
+
+    .info-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 9px;
+        background: #eff6ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #0d6efd;
+        font-size: 0.95rem;
+        flex-shrink: 0;
+    }
+
+    .info-content .info-label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #aaa;
+        margin-bottom: 2px;
+    }
+
+    .info-content .info-value {
+        font-size: 0.92rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .detail-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .btn-edit {
+        flex: 1;
+        padding: 11px;
+        background: linear-gradient(135deg,#f97316,#ea580c);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 0.88rem;
+        font-weight: 700;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+        .btn-edit:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(249,115,22,0.35);
+        }
+
+    .btn-back {
+        flex: 1;
+        padding: 11px;
+        background: #f8f9fa;
+        color: #6c757d;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+        .btn-back:hover {
+            background: #e9ecef;
+            color: #495057;
+        }
+</style>
+
+<div class="form-page-wrapper">
+    <a asp-action="Index" class="back-link">
+        <i class="bi bi-arrow-left"></i> Volver a Clientes
+    </a>
+
+    <div class="detail-card">
+        <div class="detail-header">
+            <div class="detail-avatar">@Model.NombreCompleto.Substring(0, 1).ToUpper()</div>
+            <h3>@Model.NombreCompleto</h3>
+            <p>ID: @Model.Identificacion</p>
+        </div>
+        <div class="detail-body">
+            <div class="info-row">
+                <div class="info-icon"><i class="bi bi-person-badge"></i></div>
+                <div class="info-content">
+                    <div class="info-label">Identificación</div>
+                    <div class="info-value">@Model.Identificacion</div>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-icon"><i class="bi bi-telephone"></i></div>
+                <div class="info-content">
+                    <div class="info-label">Teléfono</div>
+                    <div class="info-value">@Model.Telefono</div>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-icon"><i class="bi bi-envelope"></i></div>
+                <div class="info-content">
+                    <div class="info-label">Correo electrónico</div>
+                    <div class="info-value">@Model.Correo</div>
+                </div>
+            </div>
+
+            <div class="detail-actions">
+                <a asp-action="Index" class="btn-back">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-edit">
+                    <i class="bi bi-pencil"></i> Editar
+                </a>
+            </div>
+        </div>
+    </div>
 </div>

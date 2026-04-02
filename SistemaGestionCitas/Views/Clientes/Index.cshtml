@@ -1,55 +1,309 @@
 ﻿@model IEnumerable<SistemaGestionCitas.Models.Cliente>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Clientes";
 }
 
-<h1>Index</h1>
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
 
-<p>
-    <a asp-action="Create" class="btn btn-success">Nuevo Cliente</a>
-</p>
-<table class="table table-striped table-hover shadow">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Identificacion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NombreCompleto)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Telefono)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Correo)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Identificacion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NombreCompleto)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Telefono)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Correo)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Editar</a>
+        .page-header h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin: 0;
+        }
 
-                    <a class="btn btn-warning disabled">Ver Citas</a>
+            .page-header h2 span {
+                color: #f97316;
+            }
 
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Eliminar</a>
-            </td>
-        </tr>
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #0d6efd, #0056cc);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+        .btn-primary-custom:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(13,110,253,0.35);
+        }
+
+    .data-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+        overflow: hidden;
+    }
+
+    .data-card-header {
+        padding: 18px 24px;
+        border-bottom: 1px solid #f5f5f5;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+        .data-card-header .count-badge {
+            background: #eff6ff;
+            color: #0d6efd;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+    .search-box {
+        position: relative;
+        max-width: 280px;
+    }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .search-box input {
+            padding: 8px 12px 8px 34px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+            .search-box input:focus {
+                border-color: #0d6efd;
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(13,110,253,0.1);
+            }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .data-table thead th {
+            background: #f8fafc;
+            padding: 12px 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #6c757d;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .data-table tbody td {
+            padding: 14px 20px;
+            font-size: 0.88rem;
+            color: #333;
+            border-bottom: 1px solid #f8f8f8;
+            vertical-align: middle;
+        }
+
+        .data-table tbody tr:hover {
+            background: #fafbff;
+        }
+
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+    .client-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #0d6efd, #0056cc);
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.9rem;
+        margin-right: 10px;
+        flex-shrink: 0;
+    }
+
+    .client-name-cell {
+        display: flex;
+        align-items: center;
+    }
+
+    .action-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+        }
+
+    .action-btn-edit {
+        background: #fff7ed;
+        color: #f97316;
+    }
+
+        .action-btn-edit:hover {
+            background: #f97316;
+            color: white;
+        }
+
+    .action-btn-delete {
+        background: #fff0f0;
+        color: #ef4444;
+    }
+
+        .action-btn-delete:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+    .action-btn-view {
+        background: #eff6ff;
+        color: #0d6efd;
+    }
+
+        .action-btn-view:hover {
+            background: #0d6efd;
+            color: white;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #aaa;
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+
+        .empty-state p {
+            font-size: 0.9rem;
+        }
+</style>
+
+<div class="page-header">
+    <h2><i class="bi bi-people me-2" style="color:#0d6efd"></i>Gestión de <span>Clientes</span></h2>
+    <a asp-action="Create" class="btn-primary-custom">
+        <i class="bi bi-person-plus"></i> Nuevo Cliente
+    </a>
+</div>
+
+<div class="data-card">
+    <div class="data-card-header">
+        <span class="count-badge">
+            <i class="bi bi-people me-1"></i>
+            @Model.Count() clientes
+        </span>
+        <div class="search-box">
+            <i class="bi bi-search"></i>
+            <input type="text" id="searchInput" placeholder="Buscar cliente..." />
+        </div>
+    </div>
+
+    <table class="data-table" id="clientesTable">
+        <thead>
+            <tr>
+                <th>Cliente</th>
+                <th>Identificación</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+                <th style="text-align:center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in Model)
+            {
+                <tr>
+                    <td>
+                        <div class="client-name-cell">
+                            <div class="client-avatar">
+                                @c.NombreCompleto.Substring(0, 1).ToUpper()
+                            </div>
+                            <span style="font-weight:600;">@c.NombreCompleto</span>
+                        </div>
+                    </td>
+                    <td>@c.Identificacion</td>
+                    <td>
+                        <i class="bi bi-telephone me-1" style="color:#6c757d;font-size:0.8rem;"></i>
+                        @c.Telefono
+                    </td>
+                    <td>
+                        <i class="bi bi-envelope me-1" style="color:#6c757d;font-size:0.8rem;"></i>
+                        @c.Correo
+                    </td>
+                    <td style="text-align:center">
+                        <div style="display:flex;gap:6px;justify-content:center;">
+                            <a asp-action="Details" asp-route-id="@c.Id" class="action-btn action-btn-view" title="Ver detalles">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@c.Id" class="action-btn action-btn-edit" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@c.Id" class="action-btn action-btn-delete" title="Eliminar">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="5">
+                        <div class="empty-state">
+                            <i class="bi bi-people"></i>
+                            <p>
+                                No hay clientes registrados.<br>
+                                <a asp-action="Create" style="color:#0d6efd;">Registrá el primero</a>
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('searchInput').addEventListener('keyup', function () {
+            const term = this.value.toLowerCase();
+            document.querySelectorAll('#clientesTable tbody tr').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+            });
+        });
+    </script>
 }
-    </tbody>
-</table>

@@ -1,49 +1,211 @@
 ﻿@model SistemaGestionCitas.Models.Cliente
-
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Cliente";
 }
 
-<h1>Edit</h1>
+<style>
+    /* Mismo CSS que Create — copialo aquí */
+    .form-page-wrapper {
+        max-width: 620px;
+        margin: 0 auto;
+    }
 
-<h4>Cliente</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Identificacion" class="control-label"></label>
-                <input asp-for="Identificacion" class="form-control" />
-                <span asp-validation-for="Identificacion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NombreCompleto" class="control-label"></label>
-                <input asp-for="NombreCompleto" class="form-control" />
-                <span asp-validation-for="NombreCompleto" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Telefono" class="control-label"></label>
-                <input asp-for="Telefono" class="form-control" />
-                <span asp-validation-for="Telefono" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Correo" class="control-label"></label>
-                <input asp-for="Correo" class="form-control" />
-                <span asp-validation-for="Correo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #6c757d;
+        font-size: 0.85rem;
+        text-decoration: none;
+        margin-bottom: 20px;
+        transition: color 0.2s;
+    }
+
+        .back-link:hover {
+            color: #0d6efd;
+        }
+
+    .form-card {
+        background: white;
+        border-radius: 18px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+        overflow: hidden;
+        border: 1px solid #f0f0f0;
+    }
+
+    .form-card-header {
+        background: linear-gradient(135deg,#78350f,#b45309);
+        padding: 28px 32px;
+        color: white;
+    }
+
+        .form-card-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0 0 4px;
+        }
+
+        .form-card-header p {
+            font-size: 0.82rem;
+            opacity: 0.7;
+            margin: 0;
+        }
+
+    .form-card-body {
+        padding: 32px;
+    }
+
+    .form-group-custom {
+        margin-bottom: 20px;
+    }
+
+    .form-label-custom {
+        font-size: 0.83rem;
+        font-weight: 700;
+        color: #444;
+        margin-bottom: 7px;
+        display: block;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .input-custom {
+        width: 100%;
+        padding: 11px 16px;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+        background: #fafafa;
+        color: #333;
+    }
+
+        .input-custom:focus {
+            border-color: #f97316;
+            box-shadow: 0 0 0 4px rgba(249,115,22,0.08);
+            outline: none;
+            background: white;
+        }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 28px;
+        padding-top: 24px;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .btn-save {
+        flex: 1;
+        padding: 12px;
+        background: linear-gradient(135deg,#f97316,#ea580c);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(249,115,22,0.35);
+        }
+
+    .btn-cancel {
+        padding: 12px 24px;
+        background: #f8f9fa;
+        color: #6c757d;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+        .btn-cancel:hover {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+    .field-error {
+        color: #ef4444;
+        font-size: 0.78rem;
+        margin-top: 4px;
+    }
+</style>
+
+<div class="form-page-wrapper">
+    <a asp-action="Index" class="back-link">
+        <i class="bi bi-arrow-left"></i> Volver a Clientes
+    </a>
+
+    <div class="form-card">
+        <div class="form-card-header">
+            <h3><i class="bi bi-pencil-square me-2"></i>Editar Cliente</h3>
+            <p>Modificá los datos del cliente seleccionado.</p>
+        </div>
+        <div class="form-card-body">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3 mb-4 py-2 px-3" style="font-size:0.85rem;"></div>
+                <input type="hidden" asp-for="Id" />
+
+                <div class="form-row">
+                    <div class="form-group-custom">
+                        <label asp-for="NombreCompleto" class="form-label-custom">Nombre Completo</label>
+                        <input asp-for="NombreCompleto" class="input-custom" />
+                        <span asp-validation-for="NombreCompleto" class="field-error"></span>
+                    </div>
+                    <div class="form-group-custom">
+                        <label asp-for="Identificacion" class="form-label-custom">Identificación</label>
+                        <input asp-for="Identificacion" class="input-custom" />
+                        <span asp-validation-for="Identificacion" class="field-error"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group-custom">
+                        <label asp-for="Telefono" class="form-label-custom">Teléfono</label>
+                        <input asp-for="Telefono" class="input-custom" />
+                        <span asp-validation-for="Telefono" class="field-error"></span>
+                    </div>
+                    <div class="form-group-custom">
+                        <label asp-for="Correo" class="form-label-custom">Correo Electrónico</label>
+                        <input asp-for="Correo" class="input-custom" />
+                        <span asp-validation-for="Correo" class="field-error"></span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a asp-action="Index" class="btn-cancel">
+                        <i class="bi bi-x"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn-save">
+                        <i class="bi bi-check-circle"></i> Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
