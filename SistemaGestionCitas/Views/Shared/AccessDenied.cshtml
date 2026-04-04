@@ -1,0 +1,174 @@
+﻿@{
+    ViewData["Title"] = "Acceso Denegado";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Acceso Denegado - Sistema de Citas</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a1f44 0%, #0d3b7a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+            body::before {
+                content: '';
+                position: fixed;
+                width: 400px;
+                height: 400px;
+                background: rgba(249,115,22,0.07);
+                border-radius: 50%;
+                top: -100px;
+                right: -100px;
+            }
+
+            body::after {
+                content: '';
+                position: fixed;
+                width: 300px;
+                height: 300px;
+                background: rgba(255,255,255,0.03);
+                border-radius: 50%;
+                bottom: -80px;
+                left: -80px;
+            }
+
+        .card-wrapper {
+            background: white;
+            border-radius: 24px;
+            padding: 56px 48px;
+            text-align: center;
+            max-width: 480px;
+            width: 90%;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .icon-circle {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 2.5rem;
+            color: #dc2626;
+        }
+
+        .error-code {
+            font-size: 4rem;
+            font-weight: 900;
+            color: #f0f4f8;
+            line-height: 1;
+            margin-bottom: 8px;
+            letter-spacing: -2px;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 0.88rem;
+            color: #6c757d;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .btn-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #0d6efd, #0056cc);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-right: 8px;
+        }
+
+            .btn-home:hover {
+                color: white;
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(13,110,253,0.35);
+            }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8f9fa;
+            color: #6c757d;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1.5px solid #e5e7eb;
+            transition: all 0.2s;
+        }
+
+            .btn-back:hover {
+                background: #e9ecef;
+                color: #495057;
+            }
+
+        .divider {
+            border-top: 1px solid #f0f0f0;
+            margin: 28px 0;
+        }
+
+        .brand {
+            font-size: 0.78rem;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <div class="card-wrapper">
+        <div class="icon-circle">
+            <i class="bi bi-shield-x"></i>
+        </div>
+        <div class="error-code">403</div>
+        <h2>Acceso Denegado</h2>
+        <p>No tenés permisos para acceder a esta página. Si creés que esto es un error, contactá al administrador del sistema.</p>
+
+        <div>
+            <a href="/" class="btn-home">
+                <i class="bi bi-house"></i> Ir al inicio
+            </a>
+            <a href="javascript:history.back()" class="btn-back">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+
+        <div class="divider"></div>
+        <p class="brand">Sistema de Gestión de Citas &mdash; UISIL ISB-16</p>
+    </div>
+</body>
+</html>

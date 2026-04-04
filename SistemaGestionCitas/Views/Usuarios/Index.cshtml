@@ -4,6 +4,26 @@
 }
 
 <style>
+    .action-btn-toggle-on {
+        background: #f0fdf4;
+        color: #22c55e;
+    }
+
+        .action-btn-toggle-on:hover {
+            background: #22c55e;
+            color: white;
+        }
+
+    .action-btn-toggle-off {
+        background: #fef9c3;
+        color: #ca8a04;
+    }
+
+        .action-btn-toggle-off:hover {
+            background: #ca8a04;
+            color: white;
+        }
+
     .page-header {
         display: flex;
         justify-content: space-between;
@@ -337,6 +357,14 @@
                             </a>
                             @if (u.Email != "admin@sistema.com")
                             {
+                                <form asp-action="ToggleActivo" asp-route-id="@u.Id" method="post" style="display:inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit"
+                                            class="action-btn @(u.Activo ? "action-btn-toggle-off" : "action-btn-toggle-on")"
+                                            title="@(u.Activo ? "Desactivar" : "Activar")">
+                                        <i class="bi @(u.Activo ? "bi-toggle-on" : "bi-toggle-off")"></i>
+                                    </button>
+                                </form>
                                 <a asp-action="Delete" asp-route-id="@u.Id"
                                    class="action-btn action-btn-delete" title="Eliminar">
                                     <i class="bi bi-trash"></i>

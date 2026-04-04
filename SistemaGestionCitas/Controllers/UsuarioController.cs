@@ -17,6 +17,36 @@ namespace SistemaGestionCitas.Controllers
             _roleManager = roleManager;
         }
 
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleActivo(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) return NotFound();
+
+            // Evitar desactivar el admin principal
+            if (user.Email == "admin@sistema.com")
+            {
+                TempData["Error"] = "No se puede desactivar el administrador principal.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var isActive = !user.LockoutEnd.HasValue || user.LockoutEnd <= DateTimeOffset.Now;
+
+            if (isActive)
+                await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
+            else
+                await _userManager.SetLockoutEndDateAsync(user, null);
+
+            TempData["Exito"] = isActive
+                ? $"Usuario '{user.Email}' desactivado."
+                : $"Usuario '{user.Email}' activado.";
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
         // GET: Usuarios
         public async Task<IActionResult> Index()
         {
@@ -181,6 +211,8 @@ namespace SistemaGestionCitas.Controllers
         }
     }
 
+
+
     // ViewModels necesarios (podés moverlos a la carpeta Models si preferís)
     public class UsuarioViewModel
     {
@@ -222,4 +254,5 @@ namespace SistemaGestionCitas.Controllers
         [System.ComponentModel.DataAnnotations.Display(Name = "Activo")]
         public bool Activo { get; set; }
     }
+
 }

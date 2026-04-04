@@ -58,6 +58,12 @@ namespace SistemaGestionCitas.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Identificacion,NombreCompleto,Telefono,Correo")] Cliente cliente)
         {
+            // Validar identificación duplicada
+            if (_context.Clientes.Any(c => c.Identificacion == cliente.Identificacion))
+            {
+                ModelState.AddModelError("Identificacion",
+                    "Ya existe un cliente con esta identificación.");
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(cliente);
@@ -95,6 +101,14 @@ namespace SistemaGestionCitas.Controllers
                 return NotFound();
             }
 
+            // Validar identificación duplicada (excluyendo el cliente actual)
+            if (_context.Clientes.Any(c => c.Identificacion == cliente.Identificacion
+                && c.Id != cliente.Id))
+            {
+                ModelState.AddModelError("Identificacion",
+                    "Ya existe un cliente con esta identificación.");
+            }
+
             if (ModelState.IsValid)
             {
                 try
@@ -126,7 +140,7 @@ namespace SistemaGestionCitas.Controllers
                 return NotFound();
             }
 
-            var cliente = await _context.Clientes
+             var cliente = await _context.Clientes
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (cliente == null)
             {

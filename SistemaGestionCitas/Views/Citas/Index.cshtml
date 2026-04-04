@@ -367,8 +367,9 @@
                                 <a asp-action="Edit" asp-route-id="@c.Id" class="action-btn action-btn-edit" title="Editar">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <form asp-action="Cancelar" asp-route-id="@c.Id" method="post" style="display:inline"
-                                      onsubmit="return confirm('¿Cancelar esta cita?')">
+                                <form asp-action="Cancelar" asp-route-id="@c.Id" method="post"
+                                      style="display:inline"
+                                      onsubmit="event.preventDefault(); openCancelModal(this);">
                                     @Html.AntiForgeryToken()
                                     <button type="submit" class="action-btn action-btn-cancel" title="Cancelar cita">
                                         <i class="bi bi-x-circle"></i>
@@ -398,7 +399,132 @@
 </div>
 
 @section Scripts {
+    <style>
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+            .modal-overlay.show {
+                opacity: 1;
+                pointer-events: all;
+            }
+
+        .modal-box {
+            background: white;
+            border-radius: 20px;
+            padding: 36px 32px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            transform: scale(0.9);
+            transition: transform 0.2s;
+        }
+
+        .modal-overlay.show .modal-box {
+            transform: scale(1);
+        }
+
+        .modal-icon {
+            width: 70px;
+            height: 70px;
+            background: #fef2f2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 2rem;
+            color: #dc2626;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+
+        .modal-text {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-btn-cancel-action {
+            flex: 1;
+            padding: 11px;
+            background: linear-gradient(135deg,#dc2626,#b91c1c);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+            .modal-btn-cancel-action:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 6px 16px rgba(220,38,38,0.35);
+            }
+
+        .modal-btn-close {
+            flex: 1;
+            padding: 11px;
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+            .modal-btn-close:hover {
+                background: #e9ecef;
+            }
+    </style>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="cancelModal">
+        <div class="modal-box">
+            <div class="modal-icon"><i class="bi bi-calendar-x"></i></div>
+            <div class="modal-title">Cancelar Cita</div>
+            <p class="modal-text">
+                ¿Estás seguro que querés cancelar esta cita?<br>
+                <strong>Esta acción no se puede deshacer.</strong>
+            </p>
+            <div class="modal-actions">
+                <button class="modal-btn-close" onclick="closeModal()">
+                    <i class="bi bi-x me-1"></i> No, volver
+                </button>
+                <button class="modal-btn-cancel-action" onclick="confirmCancel()">
+                    <i class="bi bi-x-circle me-1"></i> Sí, cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Búsqueda
         document.getElementById('searchInput').addEventListener('keyup', function () {
             const term = this.value.toLowerCase();
             document.querySelectorAll('#citasTable tbody tr').forEach(row => {
@@ -406,18 +532,37 @@
             });
         });
 
+        // Filtros
         function filterCitas(estado, btn) {
-            document.querySelectorAll('.filter-btn').forEach(b => {
-                b.className = 'filter-btn';
-            });
+            document.querySelectorAll('.filter-btn').forEach(b => b.className = 'filter-btn');
             if (estado === 'all') btn.classList.add('active-all');
             else if (estado === 'Programada') btn.classList.add('active-prog');
             else btn.classList.add('active-canc');
-
             document.querySelectorAll('#citasTable tbody tr').forEach(row => {
-                if (estado === 'all') row.style.display = '';
-                else row.style.display = row.dataset.estado === estado ? '' : 'none';
+                row.style.display = (estado === 'all' || row.dataset.estado === estado) ? '' : 'none';
             });
         }
+
+        // Modal cancelar
+        let formToSubmit = null;
+
+        function openCancelModal(form) {
+            formToSubmit = form;
+            document.getElementById('cancelModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('cancelModal').classList.remove('show');
+            formToSubmit = null;
+        }
+
+        function confirmCancel() {
+            if (formToSubmit) formToSubmit.submit();
+        }
+
+        // Cerrar modal al hacer click fuera
+        document.getElementById('cancelModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
     </script>
 }

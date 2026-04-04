@@ -22,6 +22,12 @@ namespace SistemaGestionCitas.Controllers
 
         public IActionResult Index() => View();
 
+        [AllowAnonymous]
+        public IActionResult AccessDenied() 
+        {
+            return View("~/Views/Shared/AccesDenied.cshtml");
+        }
+
         public async Task<IActionResult> Stats()
         {
             var userId = _userManager.GetUserId(User);
